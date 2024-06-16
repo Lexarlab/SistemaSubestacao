@@ -27,48 +27,52 @@ import jakarta.validation.Valid;
 @RequestMapping("/subestacao")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SubestacaoController {
-	
-	@Autowired
-	private SubestacaoRepository subestacaoRepository;
-	
-	@GetMapping
-	public ResponseEntity<List<Subestacao>> getAll(){
-		return ResponseEntity.ok(subestacaoRepository.findAll());
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Subestacao> getById(@PathVariable Long id) {
-		return subestacaoRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-	}
-	
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Subestacao>> getByNome(@PathVariable String nome) {
-		return ResponseEntity.ok(subestacaoRepository.findAllByNomeContainingIgnoreCase(nome));
-	}
-	
-	@PostMapping
-	public ResponseEntity<Subestacao> post(@Valid @RequestBody Subestacao subestacao) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(subestacaoRepository.save(subestacao));
-	}
-	
-	@PutMapping
-	public ResponseEntity<Subestacao> put(@Valid @RequestBody Subestacao subestacao){
-        return subestacaoRepository.findById(subestacao.getId())
-            .map(resposta -> ResponseEntity.status(HttpStatus.CREATED)
-            .body(subestacaoRepository.save(subestacao)))
+
+    @Autowired
+    private SubestacaoRepository subestacaoRepository;
+
+    @GetMapping
+    public ResponseEntity<List<Subestacao>> getAll() {
+        return ResponseEntity.ok(subestacaoRepository.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Subestacao> getById(@PathVariable Long id) {
+        return subestacaoRepository.findById(id)
+            .map(resposta -> ResponseEntity.ok(resposta))
             .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id) {
-		Optional<Subestacao> subestacao = subestacaoRepository.findById(id);
 
-		if (subestacao.isEmpty())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<List<Subestacao>> getByNome(@PathVariable String nome) {
+        return ResponseEntity.ok(subestacaoRepository.findAllByNomeContainingIgnoreCase(nome));
+    }
 
-		subestacaoRepository.deleteById(id);
-	}
+    @PostMapping
+    public ResponseEntity<Subestacao> post(@Valid @RequestBody Subestacao subestacao) {
+        try {
+            Subestacao novaSubestacao = subestacaoRepository.save(subestacao);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaSubestacao);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
+    @PutMapping
+    public ResponseEntity<Subestacao> put(@Valid @RequestBody Subestacao subestacao) {
+        return subestacaoRepository.findById(subestacao.getId())
+            .map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(subestacaoRepository.save(subestacao)))
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        Optional<Subestacao> subestacao = subestacaoRepository.findById(id);
+
+        if (subestacao.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        subestacaoRepository.deleteById(id);
+    }
 }

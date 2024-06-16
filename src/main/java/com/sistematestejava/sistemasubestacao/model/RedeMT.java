@@ -14,7 +14,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "TB_REDE_MT")
 public class RedeMT {
@@ -41,44 +45,4 @@ public class RedeMT {
     @JoinColumn(name = "ID_SUBESTACAO",  nullable = false)
     private Subestacao subestacao;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public BigDecimal getTensaoNominal() {
-		return tensaoNominal;
-	}
-
-	public void setTensaoNominal(BigDecimal tensaoNominal) {
-		this.tensaoNominal = tensaoNominal;
-	}
-
-	public Subestacao getSubestacao() {
-		return subestacao;
-	}
-
-	public void setSubestacao(Subestacao subestacao) {
-		this.subestacao = subestacao;
-	}
-    
 }
